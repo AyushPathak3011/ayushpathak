@@ -1,5 +1,5 @@
 ---
-title: Demos - Anthony Fu
+title: Demos - Ayush Pathak
 display: Demos
 subtitle: Demostractions for projects I am working on from Tweets
 description: Demostractions for projects I am working on from Tweets

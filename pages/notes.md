@@ -1,5 +1,5 @@
 ---
-title: Notes - Anthony Fu
+title: Notes - Ayush Pathak
 display: Notes
 subtitle: Quick notes / tips
 description: Quick notes / tips
@@ -27,7 +27,7 @@ When you build multiple entries in a single package, you exports them with `expo
       "types": "./dist/foo.d.ts",
       "import": "./dist/foo.mjs",
       "require": "./dist/foo.cjs"
-    },
+    }
   }
 }
 ```
@@ -44,8 +44,8 @@ So when you trying to import `my-pkg/foo`, TypeScript actually looking for the `
 
 ```ts
 // foo.d.ts
-export { default } from './dist/foo.d.ts'
-export * from './dist/foo.d.ts'
+export { default } from "./dist/foo.d.ts";
+export * from "./dist/foo.d.ts";
 ```
 
 Which solve the problem, but also making your root directory quite messy.
@@ -56,10 +56,7 @@ Until [@tmkx](https://github.com/tmkx) [shared me](https://github.com/antfu/unpl
 {
   "typesVersions": {
     "*": {
-      "*": [
-        "./dist/index.d.ts",
-        "./dist/*"
-      ]
+      "*": ["./dist/index.d.ts", "./dist/*"]
     }
   }
 }
@@ -79,7 +76,7 @@ Credit to [GitHub Copilot](https://copilot.github.com/).
 I didn't know you could provide a map function to `Array.from` as a second argument until today.
 
 ```js
-Array.from({ length: 10 }, (_, i) => i)
+Array.from({ length: 10 }, (_, i) => i);
 // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 ```
 
@@ -105,15 +102,16 @@ pnpm store prune
 
 _2021/08/30_
 
-In ESM, you might found your old friends `__dirname` and `__filename` are no longer available. When you search for [solutions](https://stackoverflow.com/questions/46745014/alternative-for-dirname-in-node-when-using-the-experimental-modules-flag), you will find that you will need to parse `import.meta.url` to get the equivalents. While most of the solutions only show you the way to get them in ESM only, If you like me, who write modules in TypeScript and transpile to both CJS and ESM at the same time using tools like [`tsup`](https://tsup.egoist.sh/). Here is the isomorphic solution: 
+In ESM, you might found your old friends `__dirname` and `__filename` are no longer available. When you search for [solutions](https://stackoverflow.com/questions/46745014/alternative-for-dirname-in-node-when-using-the-experimental-modules-flag), you will find that you will need to parse `import.meta.url` to get the equivalents. While most of the solutions only show you the way to get them in ESM only, If you like me, who write modules in TypeScript and transpile to both CJS and ESM at the same time using tools like [`tsup`](https://tsup.egoist.sh/). Here is the isomorphic solution:
 
 ```js
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
-const _dirname = typeof __dirname !== 'undefined'
-  ? __dirname
-  : dirname(fileURLToPath(import.meta.url))
+const _dirname =
+  typeof __dirname !== "undefined"
+    ? __dirname
+    : dirname(fileURLToPath(import.meta.url));
 ```
 
 </article>
@@ -171,12 +169,12 @@ _2021/07/01_
 For example:
 
 ```ts
-const app = await createServer()
-const middlewareA = await resolveMiddlewareA()
-const middlewareB = await resolveMiddlewareB()
+const app = await createServer();
+const middlewareA = await resolveMiddlewareA();
+const middlewareB = await resolveMiddlewareB();
 
-app.use(middlewareA)
-app.use(middlewareB)
+app.use(middlewareA);
+app.use(middlewareB);
 ```
 
 We have used three `await` in the example, while the three async function does not actually relying on each other, having them sequentially we are possibility wasted some time of the operations that could be parallelized (IO, Network, etc.)
@@ -184,57 +182,55 @@ We have used three `await` in the example, while the three async function does n
 So we can use [`Promise.all`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all) to optimize the code:
 
 ```ts
-const [app, middlewareA, middlewareB] = await Promise.all(
-  [
-    createServer(),
-    resolveMiddlewareA(),
-    resolveMiddlewareB(),
-  ],
-)
+const [app, middlewareA, middlewareB] = await Promise.all([
+  createServer(),
+  resolveMiddlewareA(),
+  resolveMiddlewareB(),
+]);
 
-app.use(middlewareA)
-app.use(middlewareB)
+app.use(middlewareA);
+app.use(middlewareB);
 ```
 
 In another example, you might relying on the async result, but sometime not that urgent:
 
 ```ts
 async function createPlugin() {
-  const toolkit = await initToolKit()
+  const toolkit = await initToolKit();
 
   return {
     onHookA() {
-      toolkit.invokeA()
+      toolkit.invokeA();
     },
     onHookB() {
-      toolkit.invokeB()
+      toolkit.invokeB();
     },
-  }
+  };
 }
 
-const plugin = await createPlugin()
+const plugin = await createPlugin();
 ```
 
 Even though you don't need `toolkit` immediately, you are still forced to use `async function` because the `initToolKit` is async. To avoid this, we could make the promise been resolved in the hooks instead
 
 ```ts
 function createPlugin() {
-  const toolkitPromise = initToolKit()
+  const toolkitPromise = initToolKit();
 
   return {
     async onHookA() {
-      const toolkit = await toolkitPromise
-      toolkit.invokeA()
+      const toolkit = await toolkitPromise;
+      toolkit.invokeA();
     },
     async onHookB() {
-      const toolkit = await toolkitPromise
-      toolkit.invokeB()
+      const toolkit = await toolkitPromise;
+      toolkit.invokeB();
     },
-  }
+  };
 }
 
 // now it's sync!
-const plugin = createPlugin()
+const plugin = createPlugin();
 ```
 
 Since a Promise could only [be resolved once](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#description), using multiple `await` for a single Promise instance is [totally fine](https://blog.ashleygrant.com/2020/04/30/resolved-javascript-promises-can-be-used-multiple-times/) - it will return the resolved result immediate if the Promise is allready settled.
@@ -243,13 +239,12 @@ To be more generalized, we could have an utility function like:
 
 ```ts
 export function createSingletonPromise<T>(fn: () => Promise<T>) {
-  let _promise: Promise<T> | undefined
+  let _promise: Promise<T> | undefined;
 
   return () => {
-    if (!_promise)
-      _promise = fn()
-    return _promise
-  }
+    if (!_promise) _promise = fn();
+    return _promise;
+  };
 }
 ```
 
@@ -270,45 +265,43 @@ For example:
 
 ```ts
 // context.ts
-import type { InjectionKey } from 'vue'
+import type { InjectionKey } from "vue";
 
 export interface UserInfo {
-  id: number
-  name: string
+  id: number;
+  name: string;
 }
 
-export const InjectKeyUser: InjectionKey<UserInfo> = Symbol()
+export const InjectKeyUser: InjectionKey<UserInfo> = Symbol();
 ```
 
 ```ts
 // parent.vue
-import { provide } from 'vue'
-import { InjectKeyUser } from './context'
+import { provide } from "vue";
+import { InjectKeyUser } from "./context";
 
 export default {
   setup() {
     provide(InjectKeyUser, {
-      id: '117', // type error: should be number
-      name: 'Anthony',
-    })
+      id: "117", // type error: should be number
+      name: "Anthony",
+    });
   },
-}
+};
 ```
 
 ```ts
 // child.vue
-import { inject } from 'vue'
-import { InjectKeyUser } from './context'
+import { inject } from "vue";
+import { InjectKeyUser } from "./context";
 
 export default {
   setup() {
-    const user = inject(InjectKeyUser) // UserInfo | undefined
+    const user = inject(InjectKeyUser); // UserInfo | undefined
 
-    if (user)
-      console.log(user.name) // Anthony
-
+    if (user) console.log(user.name); // Anthony
   },
-}
+};
 ```
 
 See [the docs](https://v3.vuejs.org/api/composition-api.html#provide-inject) for more details.
@@ -325,22 +318,19 @@ There is currently no API to access colors of current theme in VS Code Extension
 Since most of the themes follow the conversions of having `Light` or `Dark` in their names. Then we can have:
 
 ```ts
-import { workspace } from 'vscode'
+import { workspace } from "vscode";
 
 export function isDarkTheme() {
-  const theme = workspace.getConfiguration()
-    .get('workbench.colorTheme', '')
+  const theme = workspace.getConfiguration().get("workbench.colorTheme", "");
 
   // must be dark
-  if (theme.match(/dark|black/i) != null)
-    return true
+  if (theme.match(/dark|black/i) != null) return true;
 
   // must be light
-  if (theme.match(/light/i) != null)
-    return false
+  if (theme.match(/light/i) != null) return false;
 
   // IDK, maybe dark
-  return true
+  return true;
 }
 ```
 
@@ -364,9 +354,9 @@ Configurations can be quite complex, and sometimes you may want to utilize the g
  */
 const config = {
   /* ... */
-}
+};
 
-module.exports = config
+module.exports = config;
 ```
 
 Prefect. Everything should work and you can already call it a day.
@@ -375,11 +365,11 @@ I have never thought about we can do better, until I saw [Vite's approach](https
 
 ```ts
 // vite.config.js
-import { defineConfig } from 'vite'
+import { defineConfig } from "vite";
 
 export default defineConfig({
   /* ... */
-})
+});
 ```
 
 No JSDocs, no need to declare a variable first then export it. And since TypeScript will infer the types even you are using plain JavaScript, it works great with both.
@@ -387,10 +377,10 @@ No JSDocs, no need to declare a variable first then export it. And since TypeScr
 How? The `defineConfig` is literally a pass-through, but brings with types:
 
 ```ts
-import type { UserConfig } from 'vite'
+import type { UserConfig } from "vite";
 
 export function defineConfig(options: UserConfig) {
-  return options
+  return options;
 }
 ```
 
@@ -406,31 +396,31 @@ _2021/02/28_
 In JavaScript, single quotes('') and double quotes("") are interchangeable. With ES6, we now even have backticks(``) for template literals. When you want to write a quick script to find all the strings without introducing a heavy parser, you may think about using RegExp. For example, you can have:
 
 ```ts
-/['"`](.*?)['"`]/gm
+/['"`](.*?)['"`]/gm;
 ```
 
 It works for most of the case, but not for mixed quotes:
 
 ```ts
-'const a = "Hi, I\'m Anthony"'.match(/['"`](.*)['"`]/m)[1] // "Hi, I"
+'const a = "Hi, I\'m Anthony"'.match(/['"`](.*)['"`]/m)[1]; // "Hi, I"
 ```
 
 You have to make sure the starting quote and ending quote are the same type. Initially I thought it was impossible to do it in RegExp, or we have to do like this:
 
 ```ts
-/'(.*?)'|"(.*?)"|`(.*?)`/gm
+/'(.*?)'|"(.*?)"|`(.*?)`/gm;
 ```
 
 That's definitely a bad idea as it makes you duplicated your notations. Until I found this solution:
 
 ```ts
-/(['"`])(.*?)\1/gm
+/(['"`])(.*?)\1/gm;
 ```
 
 `\1` is a [Backreferences](https://www.regular-expressions.info/backref.html) to your first group, similarly you can have `\2` for the second group 2 and `\3` for the third, you got the idea. This is exactly what I need! Take it a bit further, to exclude the backslash escaping, now we can have a much reliable RegExp for extracting quoted texts from any code.
 
 ```ts
-/(["'`])((?:\\\1|(?:(?!\1)|\n|\r).)*?)\1/mg
+/(["'`])((?:\\\1|(?:(?!\1)|\n|\r).)*?)\1/gm;
 ```
 
 You can find it running in action on my [`vite-plugin-windicss`](https://github.com/windicss/vite-plugin-windicss/blob/571c1d9d9bcbf699038614e6f9fab0ddc62b959b/packages/plugin-utils/src/regexes.ts#L1).
@@ -447,17 +437,17 @@ When you need to detect if a string contains Chinese characters, you would commo
 If you Google it, you are likely end up with [this solution](https://stackoverflow.com/a/21113538):
 
 ```ts
-/[\u4E00-\u9FCC\u3400-\u4DB5\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD840-\uD868][\uDC00-\uDFFF]|\uD869[\uDC00-\uDED6\uDF00-\uDFFF]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD86D[\uDC00-\uDF34\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1D]/
+/[\u4E00-\u9FCC\u3400-\u4DB5\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD840-\uD868][\uDC00-\uDFFF]|\uD869[\uDC00-\uDED6\uDF00-\uDFFF]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD86D[\uDC00-\uDF34\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1D]/;
 ```
 
 It works, but a bit dirty. Fortunately, I found [a much simpler solution](https://stackoverflow.com/a/61151122) today:
 
 ```ts
-/\p{Script=Han}/u
+/\p{Script=Han}/u;
 ```
 
 ```ts
-!!'你好'.match(/\p{Script=Han}/u) // true
+!!"你好".match(/\p{Script=Han}/u); // true
 ```
 
 It's called [Unicode property escapes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Unicode_Property_Escapes) and already available in [Chrome 64, Firefox 79, Safari 11.1 and Node.js 10](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#browser_compatibility).
