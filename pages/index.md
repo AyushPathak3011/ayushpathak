@@ -15,7 +15,7 @@ Co-founder of Minimaly, a company that provides minimalistic web development and
 
 Dreaming up ideas and making them come true is where my passion lies. You can find my [full projects list here](/projects).
 
-Outside of programming, I enjoy playing football and traveling. I am also a Formula 1 fanatic.<br>
+Outside of programming, I enjoy playing football and travelling. I am also a Formula 1 fanatic.<br>
 
 If you happen to be in the same city I live (currently in Pune), maybe we can hang out and grab a coffee or code together.
 
