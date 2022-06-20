@@ -9,7 +9,7 @@ const route = useRoute();
 
 <template>
   <div class="prose m-auto mb-8 select-none">
-    <button
+    <!-- <button
       flex="~ gap1"
       items-center
       mb2
@@ -19,7 +19,7 @@ const route = useRoute();
     >
       <div :i="englishOnly ? 'carbon-checkbox-checked' : 'carbon-checkbox'" />
       English Only
-    </button>
+    </button> -->
 
     <div mb-0 flex="~ gap-3" text-3xl>
       <!-- <router-link
@@ -34,7 +34,7 @@ const route = useRoute();
         class="!border-none !font-400"
         :class="route.path === '/podcasts' ? '' : inactiveStyle"
       >
-        About Me
+        Resources
       </router-link>
       <router-link
         to="/posts"

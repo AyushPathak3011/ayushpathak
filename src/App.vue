@@ -9,11 +9,11 @@
 <script setup lang="ts">
 useHead({
   meta: [
-    { property: 'og:title', content: 'Anthony Fu' },
-    { property: 'og:image', content: 'https://antfu.me/avatar.png' },
-    { name: 'description', content: 'Anthony Fu\'s Portfolio' },
-    { name: 'twitter:card', content: 'summary' },
-    { name: 'twitter:creator', content: '@antfu7' },
+    { property: "og:title", content: "Ayush Pathak" },
+    // { property: 'og:image', content: 'https://antfu.me/avatar.png' },
+    { name: "description", content: "Ayush Pathak's Portfolio" },
+    { name: "twitter:card", content: "summary" },
+    { name: "twitter:creator", content: "fakeayush" },
   ],
-})
+});
 </script>

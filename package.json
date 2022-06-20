@@ -63,7 +63,10 @@
     "vite-svg-loader": "^3.4.0"
   },
   "eslintConfig": {
-    "extends": "@antfu"
+    "extends": "@antfu",
+    "rules": {
+      "vue/component-tags-order": "off"
+    }
   },
   "pnpm": {
     "overrides": {
