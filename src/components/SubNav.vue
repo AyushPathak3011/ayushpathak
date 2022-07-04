@@ -30,19 +30,20 @@ const route = useRoute();
         Talks
       </router-link> -->
       <router-link
-        to="/AboutMe"
-        class="!border-none !font-400"
-        :class="route.path === '/podcasts' ? '' : inactiveStyle"
-      >
-        Resources
-      </router-link>
-      <router-link
         to="/posts"
         class="!border-none !font-400"
         :class="route.path === '/posts' ? '' : inactiveStyle"
       >
-        Threads
+        Blog
       </router-link>
+      <router-link
+        to="/AboutMe"
+        class="!border-none !font-400"
+        :class="route.path === '/AboutMe' ? '' : inactiveStyle"
+      >
+        Resources
+      </router-link>
+
       <!-- <router-link
         to="/streams"
         class="!border-none !font-400"

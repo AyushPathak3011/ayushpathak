@@ -1,5 +1,5 @@
 ---
-title: About - Ayush Pathak
+title: Resources - Ayush Pathak
 display: ""
 items:
   - title: "Contributing to open source"

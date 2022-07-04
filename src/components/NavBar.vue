@@ -15,8 +15,8 @@ import { isDark } from "~/logics";
     <nav class="nav">
       <div class="spacer" />
       <div class="right">
-        <router-link to="/AboutMe" title="About Me">
-          <span class="lt-md:hidden">About Me</span>
+        <router-link to="/posts" title="About Me">
+          <span class="lt-md:hidden">Posts</span>
           <div i-ri-article-line md:hidden />
         </router-link>
         <router-link to="/projects" title="Projects">
