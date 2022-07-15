@@ -19,7 +19,7 @@ projects:
   Blockchain:
     - name: "brokeDAO"
       link: "https://github.com/AyushPathak3011/brokeDAO"
-      desc: "A DAO for students and contributors with NFT minting, governance and voting features."
+      desc: "Winner BlockET Hackathon by IET-VIT Revise Track. <br>A DAO for students and contributors with NFT minting, governance and voting features."
       icon: "i-carbon-favorite"
 ---
 
