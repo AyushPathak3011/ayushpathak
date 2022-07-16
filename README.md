@@ -1,4 +1,4 @@
-**[ayushpathak.vercel.app](https://ayushpathak.vercel.app/)**
+**[ayushpathak.vercel.app](https://ayushpathak.netlify.app/)**
 
 
 <br>
